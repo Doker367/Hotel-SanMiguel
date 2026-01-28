@@ -1,0 +1,47 @@
+version: '3.9'
+services:
+  mongo:
+    image: mongo:7
+    container_name: hotel-sanmiguel-mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: hotelmagico
+    volumes:
+      - hotel_sanmiguel_mongo_data:/data/db
+    networks:
+      - hotel_sanmiguel_network
+
+  backend:
+    build: ./backend
+    container_name: hotel-sanmiguel-backend
+    restart: unless-stopped
+    environment:
+      - PORT=4000
+      - MONGODB_URI=mongodb://mongo:27017/hotelmagico
+      - FRONTEND_URL=http://hotel-sanmiguel-frontend
+    depends_on:
+      - mongo
+    networks:
+      - hotel_sanmiguel_network
+      - web_proxy_network
+
+  frontend:
+    build: ./frontend
+    container_name: hotel-sanmiguel-frontend
+    restart: unless-stopped
+    environment:
+      - VITE_API_URL=/hotel-sanmiguel/api
+    depends_on:
+      - backend
+    networks:
+      - hotel_sanmiguel_network
+      - web_proxy_network
+
+volumes:
+  hotel_sanmiguel_mongo_data:
+
+networks:
+  hotel_sanmiguel_network:
+    driver: bridge
+  web_proxy_network:
+    external: true
