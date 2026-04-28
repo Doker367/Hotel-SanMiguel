@@ -23,7 +23,7 @@ services:
       - mongo
     networks:
       - hotel_sanmiguel_network
-      - web_proxy_network
+      - traefik_public
 
   frontend:
     build: ./frontend
@@ -41,7 +41,7 @@ services:
       - backend
     networks:
       - hotel_sanmiguel_network
-      - web_proxy_network
+      - traefik_public
 
 volumes:
   hotel_sanmiguel_mongo_data:
@@ -49,5 +49,5 @@ volumes:
 networks:
   hotel_sanmiguel_network:
     driver: bridge
-  web_proxy_network:
+  traefik_public:
     external: true
