@@ -4,7 +4,7 @@ COPY package.json ./
 RUN npm install
 COPY . .
 ENV VITE_API_URL=/hotel-sanmiguel/api
-RUN npm run build
+RUN NODE_ENV=production npm run build
 
 FROM nginx:alpine AS runtime
 COPY --from=build /app/dist /usr/share/nginx/html
